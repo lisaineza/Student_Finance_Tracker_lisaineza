@@ -1,8 +1,4 @@
-# Student Finance Tracker (Vanilla JS)
-
-Live: https://YOUR_USERNAME.github.io/student-finance-tracker/
-
-## Overview
+# Overview
 Accessible, responsive budgeting app for students — semantic HTML, mobile-first CSS, and vanilla JS with regex validation & search, sorting, and localStorage persistence.
 
 ## Features
@@ -33,7 +29,7 @@ Tab through nav → forms → table actions. Enter to submit. Skip link jumps to
 - Deploy via GitHub Pages: branch `main`, folder `/ (root)`.
 
 ## Tests
-Open `tests.html` and ensure all checks show ✅.
+Open `tests.html` and ensure all checks show .
 
 ## A11y Notes
 - Landmarks & headings, form labels, aria-live status, focus states, reduced-motion respected.
