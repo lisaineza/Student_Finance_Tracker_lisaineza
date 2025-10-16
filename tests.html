@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tests — Student Finance Tracker</title>
+  <link rel="stylesheet" href="styles/style.css" />
+  <style> body{padding:1rem} .ok{color:#0a7f0a} .bad{color:#b00020} </style>
+</head>
+<body>
+  <h1>Tests</h1>
+  <pre id="out" aria-live="polite"></pre>
+  <script type="module">
+    import { RE, compileRegex, sanitizeDescription, validateRecord } from './scripts/validators.js';
+
+    const out = document.getElementById('out');
+    const results = [];
+    const t = (name, cond) => results.push(`${cond? 'PASS':'FAIL'} — ${name}`);
+
+    // Basic regex checks
+    t('Description ok', RE.description.test('Hello world'));
+    t('Description fails lead space', !RE.description.test(' Hello'));
+
+    // Sanitize description collapses spaces
+    t('Sanitize collapses spaces', sanitizeDescription('a   b  c') === 'a b c');
+
+    // Amount regex
+    t('Amount valid 12.30', RE.amount.test('12.30'));
+    t('Amount invalid 1.234', !RE.amount.test('1.234'));
+
+    // Date regex
+    t('Date valid', RE.date.test('2025-10-15'));
+
+    // Category regex
+    t('Category valid', RE.category.test('Very Nice-Thing'));
+
+    // Advanced: duplicate-word detection
+    t('Duplicate detects', RE.duplicateWord.test('tea tea'));
+
+    // compileRegex behavior
+    t('Compile bad regex returns null', compileRegex('(+') === null);
+    t('Compile good regex returns RegExp', compileRegex('coffee|tea') instanceof RegExp);
+
+    // validateRecord: amount > 0
+    const errsZero = validateRecord({ date: '2025-10-15', description: 'X', amount: 0, category: 'Food' });
+    t('validateRecord flags zero amount', !!errsZero.amount);
+
+    // validateRecord: future date
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+    const y = tomorrow.getFullYear();
+    const m = String(tomorrow.getMonth()+1).padStart(2,'0');
+    const d = String(tomorrow.getDate()).padStart(2,'0');
+    const futureDate = `${y}-${m}-${d}`;
+    const errsFuture = validateRecord({ date: futureDate, description: 'X', amount: 1, category: 'Food' });
+    t('validateRecord flags future date', !!errsFuture.date);
+
+    // validateRecord: long description
+    const longDesc = 'a'.repeat(201);
+    const errsLong = validateRecord({ date: '2025-10-15', description: longDesc, amount: 1, category: 'Food' });
+    t('validateRecord flags long description', !!errsLong.description);
+
+    // validateRecord: invalid category
+    const errsCat = validateRecord({ date: '2025-10-15', description: 'X', amount: 1, category: 'Bad!' });
+    t('validateRecord flags invalid category', !!errsCat.category);
+
+    out.textContent = results.join('\n');
+  </script>
+</body>
+</html>
