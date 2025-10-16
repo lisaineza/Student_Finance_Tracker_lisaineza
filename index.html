@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Finance Tracker</title>
+  <meta name="description" content="Track student expenses with regex search, sorting, and offline persistence." />
+  <link rel="icon" href="assets/icon.svg" />
+  <link rel="stylesheet" href="styles/style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header role="banner" class="site-header">
+    <h1>Student Finance Tracker</h1>
+    <nav aria-label="Primary" class="site-nav">
+      <ul>
+        <li><a href="#about" class="nav-link" data-route>About</a></li>
+        <li><a href="#dashboard" class="nav-link" data-route>Dashboard</a></li>
+        <li><a href="#records" class="nav-link" data-route>Records</a></li>
+        <li><a href="#add" class="nav-link" data-route>Add/Edit</a></li>
+        <li><a href="#settings" class="nav-link" data-route>Settings</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <!-- About -->
+    <section id="about" class="route" data-route-panel>
+      <h2>About</h2>
+      <p>This app helps students track spending, set caps, and search with <strong>regex</strong>. Built with semantic HTML, mobile-first CSS, and vanilla JS.</p>
+      <ul>
+        <li>GitHub: <a href="https://github.com/your-handle" target="_blank" rel="noopener">your-handle</a></li>
+        <li>Email: <a href="mailto:you@example.com">you@example.com</a></li>
+      </ul>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboard" class="route" data-route-panel hidden>
+      <h2>Dashboard</h2>
+      <div class="cards">
+        <article class="card" aria-live="polite" id="stat-total">
+          <h3>Total Records</h3>
+          <p><span data-stat="count">0</span></p>
+        </article>
+        <article class="card">
+          <h3>Total Spent (<span data-stat="base-code">USD</span>)</h3>
+          <p><span data-stat="sum">0.00</span></p>
+        </article>
+        <article class="card">
+          <h3>Top Category</h3>
+          <p><span data-stat="topcat">—</span></p>
+        </article>
+        <article class="card" id="cap-card" aria-live="polite" aria-atomic="true">
+          <h3>Budget Cap</h3>
+          <p>Cap: <span data-stat="cap">0.00</span> — Remaining: <span data-stat="remaining">0.00</span></p>
+        </article>
+      </div>
+
+      <div class="trend">
+        <h3>Last 7 Days Trend</h3>
+        <div class="bars" role="img" aria-label="Bar chart of last seven days spending" data-trend></div>
+        <div class="trend-legend" aria-hidden="true"><span>−6</span><span>Today</span></div>
+      </div>
+    </section>
+
+    <!-- Records -->
+    <section id="records" class="route" data-route-panel hidden>
+      <h2>Records</h2>
+
+      <div class="toolbar">
+        <form id="search-form" class="search" role="search" aria-label="Regex search">
+          <label for="pattern">Search (regex):</label>
+          <input id="pattern" name="pattern" placeholder="e.g. (coffee|tea)|\\b(\\w+)\\s+\\1\\b" autocomplete="off" />
+          <label class="checkbox"><input id="casei" type="checkbox" checked /> Case-insensitive</label>
+          <button type="submit">Search</button>
+          <button type="button" id="clear-search">Clear</button>
+        </form>
+
+        <div class="import-export">
+          <input type="file" id="import-file" accept="application/json" aria-label="Import JSON" />
+          <button id="export-json" type="button">Export JSON</button>
+        </div>
+      </div>
+
+      <div role="status" id="search-status" class="sr-status" aria-live="polite"></div>
+
+      <div class="table-wrap">
+        <table class="records" aria-describedby="search-status">
+          <caption class="sr-only">Finance records</caption>
+          <thead>
+            <tr>
+              <th scope="col">Date <button class="sort" data-sort="date">↕</button></th>
+              <th scope="col">Description <button class="sort" data-sort="description">↕</button></th>
+              <th scope="col">Amount <button class="sort" data-sort="amount">↕</button></th>
+              <th scope="col">Category</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody" data-tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Add/Edit -->
+    <section id="add" class="route" data-route-panel hidden>
+      <h2>Add / Edit</h2>
+      <form id="record-form" novalidate>
+        <input type="hidden" id="id" />
+
+        <div class="field">
+          <label for="date">Date (YYYY-MM-DD)</label>
+          <input id="date" name="date" inputmode="numeric" placeholder="2025-10-15" required />
+          <small class="error" data-err-for="date"></small>
+        </div>
+
+        <div class="field">
+          <label for="description">Description</label>
+          <input id="description" name="description" placeholder="Lunch at cafeteria" required />
+          <small class="error" data-err-for="description"></small>
+        </div>
+
+        <div class="field">
+          <label for="amount">Amount</label>
+          <input id="amount" name="amount" inputmode="decimal" placeholder="12.50" required />
+          <small class="error" data-err-for="amount"></small>
+        </div>
+
+        <div class="field">
+          <label for="category">Category</label>
+          <input id="category" name="category" placeholder="Food" list="cats" required />
+          <datalist id="cats"></datalist>
+          <small class="error" data-err-for="category"></small>
+        </div>
+
+        <div class="actions">
+          <button type="submit" id="save">Save</button>
+          <button type="reset" id="reset">Reset</button>
+        </div>
+
+        <div role="status" aria-live="polite" id="form-status" class="sr-status"></div>
+      </form>
+    </section>
+
+    <!-- Settings -->
+    <section id="settings" class="route" data-route-panel hidden>
+      <h2>Settings</h2>
+      <form id="settings-form">
+        <fieldset>
+          <legend>Budget Cap</legend>
+          <label for="cap">Cap (base currency)</label>
+          <input id="cap" name="cap" inputmode="decimal" placeholder="300.00" />
+          <small class="note">Used for ARIA live updates when cap exceeded.</small>
+        </fieldset>
+
+        <fieldset>
+          <legend>Currencies</legend>
+          <div class="grid2">
+            <div>
+              <label for="baseCode">Base</label>
+              <input id="baseCode" placeholder="USD" maxlength="3" />
+            </div>
+            <div>
+              <label for="r1">Rate 1 code</label>
+              <input id="r1" placeholder="CAD" maxlength="3" />
+            </div>
+            <div>
+              <label for="rate1">Base→Rate1</label>
+              <input id="rate1" inputmode="decimal" placeholder="1.35" />
+            </div>
+            <div>
+              <label for="r2">Rate 2 code</label>
+              <input id="r2" placeholder="EUR" maxlength="3" />
+            </div>
+            <div>
+              <label for="rate2">Base→Rate2</label>
+              <input id="rate2" inputmode="decimal" placeholder="0.92" />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Categories</legend>
+          <p class="note">Default: Food, Books, Transport, Entertainment, Fees, Other</p>
+          <textarea id="catsText" rows="3" aria-label="Categories comma separated"></textarea>
+        </fieldset>
+
+        <div class="actions">
+          <button type="submit">Save Settings</button>
+          <button type="button" id="reset-data" class="danger">Reset All Data</button>
+        </div>
+
+        <div role="status" aria-live="polite" id="settings-status" class="sr-status"></div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Student Finance Tracker • <button id="load-seed" type="button">Load Seed</button></p>
+  </footer>
+
+  <script type="module" src="scripts/app.js"></script>
+</body>
+</html>
