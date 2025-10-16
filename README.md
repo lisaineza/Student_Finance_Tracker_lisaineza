@@ -2,18 +2,6 @@
 
 An accessible, responsive single-page web app for tracking student expenses. Built with semantic HTML, mobile-first CSS, and vanilla ES modules. The project focuses on form validation, safe regex search, accessible UI, and simple persistence using localStorage.
 
-## Table of Contents
-- Quick start
-- Features
-- File map
-- Validators & tests
-- Seed data format
-- Theme & accessibility
-- Troubleshooting
-- Development & contribution
-
----
-
 ## Quick start
 
 Serve the project folder with a static HTTP server to avoid module import and fetch restrictions. Examples below work from the project root.
@@ -36,7 +24,7 @@ npx http-server -p 8000
 Notes:
 - Opening `index.html` directly (file:///) can block ES module imports or fetch() requests. Use a local server when testing.
 
----
+
 
 ## Features
 
@@ -52,7 +40,6 @@ Notes:
 - Light/Dark theme with persisted preference and system-preference fallback
 - Responsive layout, ARIA live regions, skip links and keyboard-friendly controls
 
----
 
 ## File map
 
@@ -67,7 +54,7 @@ Notes:
 - `tests.html` — in-browser test harness for validator rules
 - `seed.json` — optional seed data to load for demos
 
----
+
 
 ## Validators & tests
 
@@ -81,7 +68,6 @@ The app enforces several validation rules in `scripts/validators.js`. Key rules 
 
 Open `tests.html` in a browser to run the small assertions that exercise the validator rules. The page reports PASS/FAIL for each rule.
 
----
 
 ## Seed data format
 
@@ -103,7 +89,7 @@ Open `tests.html` in a browser to run the small assertions that exercise the val
 
 Load the seed via Settings -> Load Seed or use the import JSON control.
 
----
+
 
 ## Theme & accessibility
 
@@ -111,7 +97,7 @@ Load the seed via Settings -> Load Seed or use the import JSON control.
 - When the user hasn't chosen a preference, the app follows the system `prefers-color-scheme` setting and updates automatically.
 - Accessibility: visible focus outlines, ARIA live regions for status messages, landmarks, and keyboard-friendly interactions.
 
----
+
 
 ## Troubleshooting
 
@@ -121,11 +107,10 @@ Load the seed via Settings -> Load Seed or use the import JSON control.
 
 If you report an issue, include the browser name/version and any Console errors.
 
----
 
 ## Youtube link 
 https://youtu.be/jdKBBfjheYE
 
-Contact / support: l.ineza@alustudent.com
+Contact: l.ineza@alustudent.com
 
 ## Thank you!
