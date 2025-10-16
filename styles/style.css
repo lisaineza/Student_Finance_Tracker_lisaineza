@@ -1,11 +1,14 @@
 :root{
   --bg:#f4f7fb; /* page background */
   --panel:#ffffff; /* card/panel background */
+  --surface:#ffffff; /* input / card surface */
   --text:#0b1220; /* primary text (dark) */
   --muted:#6b7280; /* muted text */
   --accent:#5b6bff; /* primary accent */
   --danger:#e11d48; /* danger */
   --focus: 3px solid #5b6bff; --radius: 12px;
+  --border: #eef2f8; /* general border */
+  --header-bg: var(--panel);
 }
 
 /* Beige page background */
@@ -17,15 +20,15 @@ body{background:#f5f0e6}
 #theme-toggle:focus{outline:var(--focus)}
 
 /* Dark mode */
-:root.dark{
-  --bg:#0b0b0e; --panel:#141419; --text:#fafafa; --muted:#b8b8c3; --accent:#7c5cff; --danger:#ff5c7c; --focus:3px solid #7c5cff;
+html.dark{
+  --bg:#0b0b0e; --panel:#141419; --surface:#121217; --text:#fafafa; --muted:#b8b8c3; --accent:#7c5cff; --danger:#ff5c7c; --focus:3px solid #7c5cff; --border:#222; --header-bg:var(--panel);
 }
 
 /* ensure existing styles inherit updated vars */
 body{background:var(--bg); color:var(--text)}
 section{background:var(--panel)}
-.card{background:var(--panel)}
-.field input, .field textarea, .search input{background:#fff}
+.card{background:var(--surface)}
+.field input, .field textarea, .search input{background:var(--surface)}
 
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -41,37 +44,50 @@ body{margin:0; font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
 .site-nav a{display:inline-block;padding:.6rem .9rem;border-radius:.5rem;color:var(--text);text-decoration:none}
 .site-nav a:focus{outline:var(--focus)}
 .site-nav a:hover{background:#eef2ff}
-.header-actions{display:none}
+/* Ensure header toggle is visible and positioned */
+.header-actions{display:block;margin-left:1rem}
 
+/* Theme toggle button styling — adapts to light/dark via CSS variables */
+#theme-toggle{
+  background:var(--panel);
+  color:var(--text);
+  border:1px solid rgba(0,0,0,0.06);
+  padding:.45rem .7rem;
+  border-radius:.4rem;
+  cursor:pointer;
+}
+#theme-toggle:focus{outline:var(--focus)}
+
+/* ...existing code... */
 main{padding:1rem; max-width:1100px; margin-inline:auto}
 section{margin-block:1rem; background:var(--panel); padding:1rem; border-radius:var(--radius); box-shadow:0 6px 18px rgba(16,24,40,0.06)}
 
 .cards{display:grid;grid-template-columns:1fr;gap:1rem}
-.card{background:#fbfdff;border-radius:var(--radius);padding:1rem;border:1px solid #eef2f8}
+.card{background:var(--surface);border-radius:var(--radius);padding:1rem;border:1px solid var(--border)}
 
 .trend{margin-top:1rem}
-.bars{display:grid;grid-template-columns:repeat(7,1fr);gap:.5rem;align-items:end;height:140px;padding:.6rem;background:#f7f9fc;border-radius:calc(var(--radius) - 2px)}
+.bars{display:grid;grid-template-columns:repeat(7,1fr);gap:.5rem;align-items:end;height:140px;padding:.6rem;background:var(--surface);border-radius:calc(var(--radius) - 2px)}
 .bars .bar{width:100%; border-radius:.4rem .4rem 0 0; background:var(--accent); transition:transform .25s ease, box-shadow .25s ease; box-shadow:0 4px 12px rgba(91,107,255,0.12)}
 .bars .bar:focus{outline:var(--focus)}
 .trend-legend{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);padding:.25rem .25rem 0}
 
 .toolbar{display:flex;flex-direction:column;gap:.75rem}
 .search{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
-.search input{padding:.6rem;border-radius:.5rem;border:1px solid #d7e0ef;background:#fff;color:var(--text)}
-.search button{padding:.5rem .75rem;border-radius:.5rem;border:1px solid #d7e0ef;background:#f3f7ff;color:var(--text);cursor:pointer}
+.search input{padding:.6rem;border-radius:.5rem;border:1px solid var(--border);background:var(--surface);color:var(--text)}
+.search button{padding:.5rem .75rem;border-radius:.5rem;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer}
 .checkbox{display:flex;align-items:center;gap:.35rem}
 
-.table-wrap{overflow:auto;border:1px solid #e6e9ef;border-radius:var(--radius);background:#fff}
+.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)}
 .records{width:100%;border-collapse:collapse}
-.records th,.records td{padding:.65rem;border-bottom:1px solid #eef2f8;text-align:left;color:var(--text)}
-.records th{position:sticky;top:0;background:#f3f6fb;z-index:1}
-.sort{margin-left:.25rem;font:inherit;border:1px solid #d7e0ef;background:#fbfdff;color:var(--text);border-radius:.3rem;cursor:pointer}
-.action-btn{padding:.28rem .55rem;border-radius:.375rem;border:1px solid #d7e0ef;background:#fbfdff;color:var(--text);cursor:pointer}
+.records th,.records td{padding:.65rem;border-bottom:1px solid var(--border);text-align:left;color:var(--text)}
+.records th{position:sticky;top:0;background:var(--panel);z-index:1}
+.sort{margin-left:.25rem;font:inherit;border:1px solid var(--border);background:transparent;color:var(--text);border-radius:.3rem;cursor:pointer}
+.action-btn{padding:.28rem .55rem;border-radius:.375rem;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer}
 .action-btn.danger{border-color:var(--danger);color:#fff;background:var(--danger)}
 
 .field{margin-bottom:.75rem}
-.field input, .field textarea{width:100%;padding:.7rem;border-radius:.5rem;border:1px solid #d7e0ef;background:#fff;color:var(--text)}
-.field input[type="date"]{background:#fff} /* ensure date picker contrasts */
+.field input, .field textarea{width:100%;padding:.7rem;border-radius:.5rem;border:1px solid var(--border);background:var(--surface);color:var(--text)}
+.field input[type="date"]{background:var(--surface)} /* ensure date picker contrasts */
 .field input:focus, .field textarea:focus{outline:var(--focus)}
 .error{color:var(--danger);min-height:1.25rem;display:block}
 
@@ -109,3 +125,24 @@ mark{background:#f7e06e;color:#000}
 @media (min-width:1024px){
   .cards{grid-template-columns:repeat(4,1fr)}
 }
+
+/* Responsive: collapse nav into a simple vertical stack on small screens */
+@media (max-width:600px){
+  .site-header{flex-direction:column;align-items:flex-start}
+  .site-nav{width:100%;order:2}
+  .site-nav ul{flex-direction:column;gap:.25rem}
+  .header-actions{order:1;margin-top:0}
+}
+
+/* Ensure toggle is visible and accessible on small screens */
+#theme-toggle{font-size:0.95rem}
+
+/* Ensure colors in dark mode (when .dark is on root) */
+html.dark{
+  --bg:#0b0b0e; --panel:#141419; --surface:#121217; --text:#fafafa; --muted:#b8b8c3; --accent:#7c5cff; --danger:#ff5c7c; --focus:3px solid #7c5cff; --border:#222; --header-bg:var(--panel);
+}
+
+/* Make sure interactive elements keep contrast */
+html.dark .site-nav a{color:var(--text)}
+html.dark .site-header{background:var(--panel)}
+html.dark .site-footer{background:transparent}

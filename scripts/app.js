@@ -16,9 +16,27 @@ window.addEventListener('DOMContentLoaded', ()=>{
   document.querySelector('#rate1').value = state.settings.currencies.rate1;
   document.querySelector('#rate2').value = state.settings.currencies.rate2;
 
-  // Theme: initialize from localStorage and wire up toggle in header.
-  const saved = localStorage.getItem('theme') || 'light';
-  applyTheme(saved);
+  // Theme: initialize from localStorage, or fall back to system preference if not set.
+  const saved = localStorage.getItem('theme');
+  let initial;
+  if (saved === 'light' || saved === 'dark') {
+    initial = saved;
+  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    initial = 'dark';
+  } else {
+    initial = 'light';
+  }
+
+  applyTheme(initial);
+
+  // If user hasn't explicitly chosen a theme, follow system changes.
+  if (!saved && window.matchMedia){
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const listener = e => applyTheme(e.matches ? 'dark' : 'light');
+    try { mq.addEventListener('change', listener); } catch { mq.addListener(listener); }
+  }
+
+  // Wire up manual toggle: this always takes precedence and saves preference
   const themeBtn = document.querySelector('#theme-toggle');
   if (themeBtn){
     themeBtn.addEventListener('click', ()=>{
