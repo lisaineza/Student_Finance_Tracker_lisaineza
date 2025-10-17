@@ -112,5 +112,6 @@ If you report an issue, include the browser name/version and any Console errors.
 https://youtu.be/jdKBBfjheYE
 
 Contact: l.ineza@alustudent.com
+https://lisaineza.github.io/Student_Finance_Tracker_lisaineza/
 
 ## Thank you!
